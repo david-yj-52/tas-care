@@ -199,19 +199,24 @@ def parse_java_file(file_path: str, project_root: str = "") -> list[MethodChunk]
 # 프로젝트 전체 파싱
 # ──────────────────────────────────────────
 
-def parse_java_project(project_root: str) -> list[MethodChunk]:
+def parse_java_project(project_root: str, skip_tests: bool = True) -> list[MethodChunk]:
     """
     프로젝트 루트 하위의 모든 .java 파일을 재귀 탐색하여 청크를 추출합니다.
-    test 디렉터리는 기본적으로 포함합니다 (제외하려면 skip_tests=True).
+    skip_tests=True (기본값) 이면 src/test 경로는 제외합니다.
     """
     all_chunks = []
-    java_files = [
-        f for f in Path(project_root).rglob("*.java")
-        if "/test/" not in str(f).replace("\\", "/")  # 테스트 코드 제외
-    ]
-    print(java_files)
+    all_files = list(Path(project_root).rglob("*.java"))
 
-    print(f"[INFO] .java 파일 {len(java_files)}개 발견")
+    if skip_tests:
+        java_files = [
+            f for f in all_files
+            if "/test/" not in str(f).replace("\\", "/")
+        ]
+        excluded = len(all_files) - len(java_files)
+        print(f"[INFO] .java 파일 {len(java_files)}개 발견 (테스트 파일 {excluded}개 제외)")
+    else:
+        java_files = all_files
+        print(f"[INFO] .java 파일 {len(java_files)}개 발견 (테스트 포함)")
 
     for java_file in java_files:
         chunks = parse_java_file(str(java_file), project_root)

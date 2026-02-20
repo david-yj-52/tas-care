@@ -244,7 +244,7 @@ if __name__ == "__main__":
     import sys
 
     chunks_file = sys.argv[1] if len(
-        sys.argv) > 1 else "/Users/davidkim/Documents/Workspace/tas/care/app/extractor/chunks.json"
+        sys.argv) > 1 else "../extractor/chunks.json"
 
     # 1. chunks.json 로드
     print(f"[1/4] 청크 파일 로드: {chunks_file}")
